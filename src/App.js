@@ -1,24 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.scss";
+import { calculateWinner } from "./helpers";
+
+import Board from "./components/Board";
+import Status from "./components/Status";
 
 function App() {
+  const [squares, setSquares] = useState(Array(9).fill(null));
+  const [xIsNext, setXIsNext] = useState(true);
+
+  const handleClick = (i) => {
+    if (calculateWinner(squares) || squares[i]) {
+      return;
+    }
+    squares[i] = xIsNext ? "X" : "O";
+    setSquares(squares);
+    setXIsNext(!xIsNext);
+  };
+
+  const resetGame = () => {
+    setSquares(Array(9).fill(null));
+    setXIsNext(true);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Status winner={calculateWinner(squares)} xIsNext={xIsNext} />
+      <Board squares={squares} onClick={handleClick} />
+      <div className="playAgainButton" onClick={resetGame}>
+        PLAY AGAIN
+      </div>
     </div>
   );
 }
